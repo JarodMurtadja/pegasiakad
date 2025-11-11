@@ -1,0 +1,243 @@
+/* ====== GLOBAL ====== */
+body {
+    background-color: #f8f9fa;
+    font-family: 'Poppins', sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* ====== SIDEBAR ====== */
+#sidebar {
+    width: 280px; /* Lebar yang diperbesar sesuai dengan desain baru */
+    height: 100dvh;
+    background: #ffffff; /* Latar belakang putih */
+    position: fixed;
+    top: 0;
+    left: 0;
+    overflow-y: auto;
+    box-shadow: 3px 0 10px rgba(0, 0, 0, 0.1); /* Bayangan halus */
+    transition: all 0.3s ease-in-out;
+    z-index: 1050;
+}
+
+#sidebar .sidebar-logo {
+    text-align: center;
+    padding: 20px 15px; /* Padding yang disesuaikan */
+    border-bottom: 1px solid #e0e0e0; /* Garis pemisah */
+    background-color: #37B7C3; /* Warna latar belakang header sidebar biru */
+    color: white; /* Warna teks putih */
+}
+
+#sidebar .sidebar-logo a {
+    text-decoration: none; /* Hapus garis bawah */
+    color: inherit; /* Gunakan warna teks dari parent */
+    font-weight: 600; /* Tebalkan teks */
+    font-size: 1.1rem; /* Ukuran teks sedikit lebih besar */
+    display: block; /* Jadikan block */
+}
+
+#sidebar .sidebar-logo img {
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    margin-bottom: 10px; /* Jarak antara gambar dan teks */
+    border-radius: 8px; /* Sedikit bulat */
+}
+
+#sidebar .sidebar-logo .fw-bold {
+    color: white; /* Pastikan teks tetap putih */
+    font-weight: 600; /* Gunakan berat font yang sesuai */
+    font-size: 1.1rem; /* Gunakan ukuran font yang sesuai */
+    margin-top: 0.25rem;
+}
+
+.sidebar-header {
+    font-weight: 600; /* Berat font yang lebih sesuai */
+    font-size: 0.85rem; /* Ukuran font yang lebih kecil */
+    text-transform: uppercase; /* Huruf kapital */
+    letter-spacing: 0.5px; /* Jarak antar huruf */
+    color: #6c757d; /* Warna abu-abu terang */
+    padding: 12px 15px 8px 15px; /* Padding yang disesuaikan */
+    background-color: #f8f9fa; /* Warna latar belakang header peran */
+    border-top: 1px solid #e0e0e0; /* Garis atas */
+    border-bottom: 1px solid #e0e0e0; /* Garis bawah */
+    margin-top: 10px; /* Jarak atas */
+}
+
+.sidebar-nav {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-nav li {
+    list-style: none; /* Pastikan list-style dihilangkan di setiap item */
+    margin: 0;
+    padding: 0;
+}
+
+.sidebar-nav li a {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Jarak antar ikon dan teks, disesuaikan */
+    padding: 12px 15px; /* Padding disesuaikan */
+    color: #495057; /* Warna teks default lebih gelap dari abu-abu muda */
+    text-decoration: none;
+    transition: all 0.2s ease-in-out;
+    font-size: 0.95rem;
+    border-left: 3px solid transparent; /* Garis kiri transparan */
+}
+
+.sidebar-nav li a i {
+    width: 20px; /* Lebar ikon */
+    text-align: center;
+    color: #6c757d; /* Warna ikon default */
+    font-size: 1.1rem; /* Ukuran ikon */
+}
+
+.sidebar-nav li a:hover {
+    background-color: #e6f7fa; /* Warna latar belakang saat hover */
+    color: #37B7C3; /* Warna teks saat hover */
+    border-left-color: #37B7C3; /* Warna garis kiri saat hover */
+}
+
+.sidebar-nav li a:hover i {
+    color: #37B7C3; /* Warna ikon saat hover */
+}
+
+/* Gaya untuk item aktif */
+.sidebar-nav li.active > a,
+.sidebar-nav li .sidebar-link.active { /* Jika Anda menambahkan kelas 'active' secara dinamis */
+    background-color: #e6f7fa;
+    color: #37B7C3;
+    border-left-color: #37B7C3;
+    font-weight: 500;
+}
+
+.sidebar-nav li.active > a i,
+.sidebar-nav li .sidebar-link.active i {
+    color: #37B7C3;
+}
+
+/* Gaya untuk dropdown */
+.sidebar-nav .collapse a { /* Target link dalam dropdown */
+    padding: 10px 15px 10px 35px; /* Indentasi dan padding disesuaikan */
+    font-size: 0.9rem; /* Ukuran teks lebih kecil */
+    color: #6c757d; /* Warna teks dropdown lebih gelap */
+    background-color: #f8f9fa; /* Warna latar belakang dropdown */
+}
+
+.sidebar-nav .collapse a:hover {
+    background-color: #e9f4f6; /* Warna hover dropdown */
+    color: #2a9ca5; /* Warna teks hover dropdown */
+    border-left-color: #2a9ca5;
+}
+
+.sidebar-nav .collapse a:hover i {
+    color: #2a9ca5; /* Warna ikon hover dropdown */
+}
+
+/* Scrollbar sidebar */
+#sidebar::-webkit-scrollbar {
+    width: 6px;
+}
+#sidebar::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 3px;
+}
+
+/* ====== MAIN CONTENT ====== */
+.main {
+    margin-left: 280px; /* Margin kiri disesuaikan dengan lebar sidebar baru */
+    transition: all 0.3s ease-in-out;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+/* ====== NAVBAR ====== */
+nav.navbar {
+    background: #fff !important;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.navbar .btn i {
+    font-size: 1.2rem;
+}
+
+.navbar .avatar {
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    object-position: center;
+}
+
+/* ====== RESPONSIVE ====== */
+@media (max-width: 991px) {
+    #sidebar {
+        left: -290px; /* Sesuaikan dengan lebar sidebar baru */
+        position: fixed;
+    }
+
+    #sidebar.active {
+        left: 0;
+    }
+
+    .main {
+        margin-left: 0;
+    }
+
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 1040;
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
+
+    /* Navbar responsif */
+    nav.navbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .navbar .navbar-collapse {
+        flex-grow: 0;
+    }
+
+    /* Sidebar item text wrap */
+    .sidebar-nav li a {
+        font-size: 0.95rem;
+        padding: 0.75rem 1rem;
+        white-space: nowrap;
+    }
+}
+
+/* ====== FOOTER (opsional) ====== */
+footer {
+    text-align: center;
+    padding: 1rem 0;
+    color: #888;
+    font-size: 0.85rem;
+}
+
+/* ====== ANIMASI HALUS ====== */
+.sidebar-nav li a, #sidebar, .main {
+    transition: all 0.3s ease-in-out;
+}
+
+/* ====== SCROLL BEHAVIOR ====== */
+html {
+    scroll-behavior: smooth;
+}

@@ -4,4 +4,4 @@
 /public/hot
 /public/storage
 /storage/*.key
-.phpunit.result.cache.env
+.phpunit.result.cache

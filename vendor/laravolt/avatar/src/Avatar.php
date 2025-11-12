@@ -20,7 +20,7 @@ class Avatar
     use AttributeGetter;
     use AttributeSetter;
 
-    protected ?string $name = "";
+    protected ?string $name = '';
 
     protected int $chars;
 
@@ -29,6 +29,8 @@ class Avatar
     protected int $width;
 
     protected int $height;
+
+    protected bool $responsive = false;
 
     protected array $availableBackgrounds = [];
 
@@ -76,20 +78,31 @@ class Avatar
 
     protected array $defaultTheme = [];
 
+    // Cache configuration properties
+    protected bool $cacheEnabled = true;
+
+    protected string $cacheKeyPrefix = 'avatar_';
+
+    protected ?int $cacheDuration = 86400; // 24 hours by default
+
     /**
      * Avatar constructor.
-     *
-     * @param array $config
-     * @param Repository $cache
      */
-    public function __construct(array $config = [], Repository $cache = null)
+    public function __construct(array $config = [], ?Repository $cache = null)
     {
-        $this->cache = $cache ?? new ArrayStore();
+        $this->cache = $cache ?? new ArrayStore;
         $this->driver = $config['driver'] ?? 'gd';
         $this->theme = $config['theme'] ?? null;
         $this->defaultTheme = $this->validateConfig($config);
         $this->applyTheme($this->defaultTheme);
-        $this->initialGenerator = new DefaultGenerator();
+        $this->initialGenerator = new DefaultGenerator;
+
+        // Set up cache configuration
+        if (isset($config['cache'])) {
+            $this->cacheEnabled = $config['cache']['enabled'] ?? true;
+            $this->cacheKeyPrefix = $config['cache']['key_prefix'] ?? 'avatar_';
+            $this->cacheDuration = $config['cache']['duration'] ?? 86400; // 24 hours by default
+        }
 
         // Add any additional themes for further use
         $themes = $this->resolveTheme('*', $config['themes'] ?? []);
@@ -134,6 +147,7 @@ class Avatar
         $this->fontSize = $config['fontSize'];
         $this->width = $config['width'];
         $this->height = $config['height'];
+        $this->responsive = $config['responsive'];
         $this->ascii = $config['ascii'];
         $this->uppercase = $config['uppercase'];
         $this->rtl = $config['rtl'];
@@ -152,7 +166,7 @@ class Avatar
     protected function setRandomTheme(): void
     {
         $themes = $this->resolveTheme($this->theme, $this->themes);
-        if (!empty($themes)) {
+        if (! empty($themes)) {
             $this->applyTheme($this->getRandomElement($themes, []));
         }
     }
@@ -163,7 +177,7 @@ class Avatar
         $themes = [];
 
         foreach ((array) $theme as $themeName) {
-            if (!is_string($themeName)) {
+            if (! is_string($themeName)) {
                 continue;
             }
             if ($themeName === '*') {
@@ -180,16 +194,32 @@ class Avatar
 
     public function toBase64(): string
     {
-        $key = $this->cacheKey();
+        if (! $this->cacheEnabled) {
+            // Skip cache if it's disabled
+            $this->buildAvatar();
+
+            return $this->image->toPng()->toDataUri();
+        }
+
+        $key = $this->cacheKeyPrefix.$this->cacheKey();
+
+        // Check if the image is in the cache
         if ($base64 = $this->cache->get($key)) {
             return $base64;
         }
 
+        // Generate the avatar
         $this->buildAvatar();
-
         $base64 = $this->image->toPng()->toDataUri();
 
-        $this->cache->forever($key, $base64);
+        // Store in cache based on configured duration
+        if ($this->cacheDuration === null) {
+            // Cache forever
+            $this->cache->forever($key, $base64);
+        } else {
+            // Cache for specified duration (in seconds)
+            $this->cache->put($key, $base64, $this->cacheDuration);
+        }
 
         return $base64;
     }
@@ -210,7 +240,11 @@ class Avatar
         $radius = ($this->width - $this->borderSize) / 2;
         $center = $this->width / 2;
 
-        $svg = '<svg xmlns="http://www.w3.org/2000/svg" width="'.$this->width.'" height="'.$this->height.'" viewBox="0 0 '.$this->width.' '.$this->height.'">';
+        $svg = '<svg xmlns="http://www.w3.org/2000/svg"';
+        if (! $this->responsive) {
+            $svg .= ' width="'.$this->width.'" height="'.$this->height.'"';
+        }
+        $svg .= ' viewBox="0 0 '.$this->width.' '.$this->height.'">';
 
         if ($this->shape === 'square') {
             $svg .= '<rect x="'.$x
@@ -244,23 +278,23 @@ class Avatar
         return $svg;
     }
 
-    public function toGravatar(array $param = null): string
+    public function toGravatar(?array $param = null): string
     {
-        // Hash generation taken from https://en.gravatar.com/site/implement/images/php/
-        $hash = md5(strtolower(trim($this->name)));
+        // Hash generation taken from https://docs.gravatar.com/api/avatars/php/
+        $hash = hash('sha256', strtolower(trim($this->name)));
 
         $attributes = [];
         if ($this->width) {
             $attributes['s'] = $this->width;
         }
 
-        if (!empty($param)) {
+        if (! empty($param)) {
             $attributes = $param + $attributes;
         }
 
         $url = sprintf('https://www.gravatar.com/avatar/%s', $hash);
 
-        if (!empty($attributes)) {
+        if (! empty($attributes)) {
             $url .= '?';
             ksort($attributes);
             foreach ($attributes as $key => $value) {
@@ -318,7 +352,7 @@ class Avatar
         $x = $this->width / 2;
         $y = $this->height / 2;
 
-        $driver = $this->driver === 'gd' ? new Driver() : new ImagickDriver();
+        $driver = $this->driver === 'gd' ? new Driver : new ImagickDriver;
         $manager = new ImageManager($driver);
         $this->image = $manager->create($this->width, $this->height);
 
@@ -455,6 +489,7 @@ class Avatar
             'fontSize' => 48,
             'width' => 100,
             'height' => 100,
+            'responsive' => false,
             'ascii' => false,
             'uppercase' => false,
             'rtl' => false,
@@ -477,5 +512,26 @@ class Avatar
         $this->setForeground($this->getRandomForeground());
         $this->setBackground($this->getRandomBackground());
         $this->setFont($this->getRandomFont());
+    }
+
+    /**
+     * Generate content-based hash for caching
+     */
+    protected function generateContentHash(): string
+    {
+        $content = [
+            'name' => $this->name,
+            'width' => $this->width,
+            'height' => $this->height,
+            'fontSize' => $this->fontSize,
+            'background' => $this->background,
+            'foreground' => $this->foreground,
+            'shape' => $this->shape,
+            'borderSize' => $this->borderSize,
+            'borderColor' => $this->borderColor,
+            'font' => $this->font,
+        ];
+
+        return substr(md5(serialize($content)), 0, 8);
     }
 }

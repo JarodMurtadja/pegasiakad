@@ -74,12 +74,12 @@ Avatar::create('Susilo Bambang Yudhoyono')->save('sample.jpg', 100); // quality 
 ### Output as Gravatar
 ```php
 Avatar::create('uyab@example.net')->toGravatar();
-// Output: http://gravatar.com/avatar/0dcae7d6d76f9a3b14588e9671c45879
+// Output: http://gravatar.com/avatar/0c5cbf5a8762d91d930795a6107b2ce5814a6ab26e60c7ec6b75bc81c7dfe3ee
 
 Avatar::create('uyab@example.net')->toGravatar(['d' => 'identicon', 'r' => 'pg', 's' => 100]);
-// Output: http://gravatar.com/avatar/0dcae7d6d76f9a3b14588e9671c45879?d=identicon&r=pg&s=100
+// Output: http://gravatar.com/avatar/0c5cbf5a8762d91d930795a6107b2ce5814a6ab26e60c7ec6b75bc81c7dfe3ee?d=identicon&r=pg&s=100
 ```
-Gravatar parameter reference: https://en.gravatar.com/site/implement/images/
+Gravatar parameter reference: https://docs.gravatar.com/api/avatars/images/
 
 ### Output as SVG
 ```php
@@ -106,6 +106,11 @@ You may specify custom font-family for your SVG text.
 
 ```php
 Avatar::create('Susilo Bambang Yudhoyono')->setFontFamily('Laravolt')->toSvg();
+```
+
+You may make the SVG responsive. This excludes the height and width attributes.
+```php
+Avatar::create('Susilo Bambang Yudhoyono')->setResponsive()->toSvg();
 ```
 
 ## Get underlying Intervention image object

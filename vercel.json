@@ -35,7 +35,5 @@
     "CACHE_DRIVER": "array",
     "LOG_CHANNEL": "stderr",
     "SESSION_DRIVER": "cookie"
-  },
-  "installCommand": "npm install",   
-  "buildCommand": "npm run production"    
+  }   
 }

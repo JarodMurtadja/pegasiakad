@@ -1,1 +1,7 @@
-404: Not Found
+.env
+/vendor/
+/node_modules/
+/public/hot
+/public/storage
+/storage/*.key
+.phpunit.result.cache

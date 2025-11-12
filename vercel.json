@@ -37,5 +37,5 @@
     "SESSION_DRIVER": "cookie"
   },
   "installCommand": "npm install",   
-  "buildCommand": "npm run build"    
+  "buildCommand": "npm run production"    
 }
